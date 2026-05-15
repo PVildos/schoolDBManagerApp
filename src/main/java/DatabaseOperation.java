@@ -8,13 +8,11 @@ public class DatabaseOperation {
     private String userId;
     private String userPassword;
     private String userRequest;
-    private String jdbcURL = "jdbc:postgresql:src/database/my_sch_stats.db";
 
     public DatabaseOperation(String userId, String userPassword, String userRequest) {
         this.userId = userId;
         this.userPassword = userPassword;
         this.userRequest = userRequest;
-        this.jdbcURL = jdbcURL;
     }
 
     private void writeLine(String line, Writer writer) throws IOException {
@@ -78,7 +76,8 @@ public class DatabaseOperation {
 
     public List<Map<String, Object>> getQueryResult(DatabaseOperation operation, String sqlQuery) {
         List<Map<String, Object>> userResultArraylist = new ArrayList<>();
-        try (Connection con = DriverManager.getConnection(operation.getJdbcURL(), operation.getUserId(), operation.getUserPassword());
+        String jdbcURL = "jdbc:postgresql://localhost:5432/my_sch_stats_db";
+        try (Connection con = DriverManager.getConnection(jdbcURL, operation.getUserId(), operation.getUserPassword());
              PreparedStatement prst = con.prepareStatement(sqlQuery)) {
             ResultSet rs = prst.executeQuery();
             ResultSetMetaData meta = rs.getMetaData();
@@ -120,13 +119,5 @@ public class DatabaseOperation {
 
     public void setUserRequest(String userRequest) {
         this.userRequest = userRequest;
-    }
-
-    public String getJdbcURL() {
-        return jdbcURL;
-    }
-
-    public void setJdbcURL(String jdbcURL) {
-        this.jdbcURL = jdbcURL;
     }
 }
